@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Hogwarts Student List</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="crest-header">
+        <img src="images/crest.png" alt="crest" />
+      </div>
+      <h1>Hogwarts</h1>
+      <h2>School of Witchcraft and Wizardry</h2>
+    </header>
+    <main>
+        <section class="paper">                    
+            <h2>List of students enrolled at Hogwarts in 1991</h2>
+          
+                    <div class="option-selector">
+                      <select>
+                        <option value="All">All</option>
+                        <option value="Gryffindor">Gryffindor</option>
+                        <option value="Slytherin">Slytherin</option>
+                        <option value="Hufflepuff">Hufflepuff</option>
+                        <option value="Ravenclaw">Ravenclaw</option>
+                        <option value="Expelled" id="optionExpelled"class="hide">Expelled</option>
+                      </select>
+                      <button id="fname">First Name</button>
+                      <button id="lname">Last Name</button>
+                      <button disabled id="reverse">Reverse</button>
+                  </div>
+                  <h2 class="listnaming"></h2><div class="fullList">
+      <ul class="full-list"></ul></div>
+    </section>
+
+    </main>
+
+
+    <div class="bg-modal hide">
+      <article class="modal-content">
+        <button id="close">X</button>
+        <div class="studentImages">
+        <div class="wrap-crest">
+            <img src="" alt="crest-house">
+        </div>
+        <div class="wrap-profile">
+            <img src="" alt="profile-pic">
+        </div></div>
+        <h3 class="name"></h3>
+        <h3 class="lastname"></h3>
+        <h3 class="middlename"></h3>
+        <h3 class="nickname"></h3>
+        <h3 class="house"></h3>
+        <h3 class="blood-status"></h3>
+        <h3 class="prefected"></h3>
+        <h3 class="inquisitorial"></h3>
+        <h5 class="expelled hide">Expelled</h5>
+<div class="buttons">
+        <button id="expellButton">Expell</button>
+
+        <button id="prefectButton">Make Prefect</button>
+        <button id="prefectRevokeButton" class="hide">Remove Prefect</button>
+
+        <button id="inquisitorialButton">Appoint to the inquisitorial squad</button>
+        <button id="inquisitorialRevokeButton" class="hide">Remove from the inquisitorial squad</button>
+      </div>
+      </article>
+    </div>
+
+
+    <template id="templt">
+      <li class="student">
+          <h3 class="first-name"></h3>
+          <h3 class="last-name"></h3>
+          <h4 class="house"></h3>
+      </li>
+    </template>
+    <script src="js.js"></script>
+  </body>
+</html>
