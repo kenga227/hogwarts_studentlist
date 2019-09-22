@@ -22,31 +22,28 @@ let prefectCounter = {
   Ravenclaw: 0
 };
 
-const protoStudent = {
+const newStudent = {
   firstname: "",
   lastname: "",
-  house: "",
-  gender: "",
   nickname: "",
   middlename: "",
-  expelled: "",
+  gender: "",
   prefect: "",
-  bloodStatus: "",
-  inquisitorial: ""
+  blood: "",
+  inquisitorial: "",
+  expelled: ""
 };
-
-//global event listeners
 
 window.addEventListener("DOMContentLoaded", init(link));
 dropdown.addEventListener("change", filterOut);
-document.querySelector("#fname").addEventListener("click", sortByFirst);
-document.querySelector("#lname").addEventListener("click", sortByLast);
-document.querySelector("#reverse").addEventListener("click", reverseArray);
+document.querySelector("#fname").addEventListener("click", sortFirst);
+document.querySelector("#lname").addEventListener("click", sortLast);
+document.querySelector("#reverse").addEventListener("click", reverseArr);
 document.querySelector("#expellButton").addEventListener("click", expell);
 document.querySelector("#prefectButton").addEventListener("click", prefect);
 document
   .querySelector("#prefectRevokeButton")
-  .addEventListener("click", revokePrefect);
+  .addEventListener("click", removePrefect);
 document
   .querySelector("#inquisitorialButton")
   .addEventListener("click", inquisitorialize);
@@ -56,15 +53,13 @@ document
 
 document.addEventListener("click", function(e) {
   if (e.target.nodeName == "LI") {
-    popModal(e.target.getAttribute("id"));
+    openModal(e.target.getAttribute("id"));
   }
 });
 
 document.querySelector("#close").addEventListener("click", function() {
   modal.classList.add("hide");
 });
-
-//Init function that starts on DOMcontentloaded
 
 function init(link) {
   fetch(link)
@@ -79,15 +74,13 @@ function init(link) {
   fetch(familylink)
     .then(e => e.json())
     .then(data => {
-      defineBloodStatus(data);
+      defineblood(data);
     });
 }
 
-//fixData - refurbishes all the data from json file to one Array of Objects for future use
-
 function fixData(students) {
   students.forEach(studentJson => {
-    const student = Object.create(protoStudent);
+    const student = Object.create(newStudent);
 
     let endOfFirstName = studentJson.fullname.trim().indexOf(" ");
     student.firstname = capitalize(studentJson.house.trim());
@@ -152,13 +145,9 @@ function fixData(students) {
   filteredData = usableData;
 }
 
-//funtion to capitalize first letter and make small other ones
-
 function capitalize(name) {
   return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 }
-
-//function that displays the data from the given array in the website
 
 function displayData(students) {
   parent.innerHTML = "";
@@ -187,9 +176,7 @@ function displayData(students) {
   });
 }
 
-//when a student is clicked, calls popMOdal which one opens a modal and populates it with data and other neccesary stuff
-
-function popModal(studentName) {
+function openModal(studentName) {
   let filteredStudent = filteredData.filter(
     studentObject => studentObject.firstname === studentName
   )[0];
@@ -271,7 +258,6 @@ function popModal(studentName) {
       ".png";
     modal.querySelector(".wrap-profile > img").classList.remove("hide");
   } else if (filteredStudent.lastname == "Patil") {
-    // ------------------------- FAKE - FIX TO CHECK FOR SAME LAST NAME ----------------------
     modal.querySelector(".wrap-profile > img").src =
       "images/" +
       filteredStudent.lastname.toLowerCase() +
@@ -279,7 +265,6 @@ function popModal(studentName) {
       filteredStudent.firstname.toLowerCase() +
       ".png";
     modal.querySelector(".wrap-profile > img").classList.remove("hide");
-    // ---------------------------------------------------------------------------------------
   } else if (filteredStudent.lastname == "~Unknown~") {
     modal.querySelector(".wrap-profile > img").classList.add("hide");
   } else {
@@ -313,16 +298,16 @@ function popModal(studentName) {
     document.querySelector("#prefectButton").disabled = true;
   }
 
-  if (filteredStudent.bloodStatus == "pure") {
+  if (filteredStudent.blood == "pure") {
     document.querySelector(".blood-status").textContent = "Blood-Status: Pure";
-  } else if (filteredStudent.bloodStatus == "half") {
+  } else if (filteredStudent.blood == "half") {
     document.querySelector(".blood-status").textContent = "Blood-Status: Half";
   } else {
     document.querySelector(".blood-status").textContent =
       "Blood-Status: Unknown";
   }
 
-  if (filteredStudent.bloodStatus == "pure") {
+  if (filteredStudent.blood == "pure") {
     document.querySelector("#inquisitorialButton").disabled = false;
   } else if (filteredStudent.house == "Slytherin") {
     document.querySelector("#inquisitorialButton").disabled = false;
@@ -350,11 +335,9 @@ function popModal(studentName) {
     document.querySelector("#expellButton").disabled = false;
   }
 
-  mixBlood(filteredStudent.firstname);
+  changeBlood(filteredStudent.firstname);
   modal.classList.remove("hide");
 }
-
-//when a dropdown change is recorded, this functions takes event value and filters out array, then calls displayData giving that array
 
 function filterOut() {
   if (dropdown.value == "All") {
@@ -375,9 +358,7 @@ function filterOut() {
   document.querySelector("#reverse").disabled = true;
 }
 
-//when button is clicked sorts items in the array by FirstName and sends that array to display data
-
-function sortByFirst() {
+function sortFirst() {
   filteredData = filteredData.sort(function(a, b) {
     return a.firstname.localeCompare(b.firstname);
   });
@@ -385,9 +366,7 @@ function sortByFirst() {
   document.querySelector("#reverse").disabled = false;
 }
 
-//when button is clicked sorts items in the array by LastName and sends that array to display data
-
-function sortByLast() {
+function sortLast() {
   filteredData = filteredData.sort(function(a, b) {
     return a.lastname.localeCompare(b.lastname);
   });
@@ -395,14 +374,10 @@ function sortByLast() {
   document.querySelector("#reverse").disabled = false;
 }
 
-//when button is clicked sorts items in the array by opposite way than before and sends that array to display data
-
-function reverseArray() {
+function reverseArr() {
   filteredData = filteredData.reverse();
   displayData(filteredData);
 }
-
-//function that is used to remove a student from All student array and adding it to the array of expelled students
 
 function expell() {
   for (let counter = 0; counter < usableData.length; counter++) {
@@ -431,8 +406,6 @@ function expell() {
   }
 }
 
-//function that makes a student a prefect and keeps track of prefects in each house
-
 function prefect() {
   for (let counter = 0; counter < usableData.length; counter++) {
     if (usableData[counter].firstname === event.target.value) {
@@ -457,9 +430,7 @@ function prefect() {
   document.querySelector("#prefectRevokeButton").classList.remove("hide");
 }
 
-//function that removes a student from prefects and keeps track of prefects in each house
-
-function revokePrefect() {
+function removePrefect() {
   for (let counter = 0; counter < usableData.length; counter++) {
     if (usableData[counter].firstname === event.target.value) {
       usableData[counter].prefect = false;
@@ -482,22 +453,18 @@ function revokePrefect() {
   document.querySelector("#prefectRevokeButton").classList.add("hide");
 }
 
-//funtion that uses data from json to define blood status of each student
-
-function defineBloodStatus(BloodTypes) {
+function defineblood(BloodTypes) {
   for (let [key, value] of Object.entries(BloodTypes)) {
     for (let i = 0; i < value.length; i++) {
       for (let j = 0; j < usableData.length; j++) {
         const lastname = usableData[j].lastname;
         if (usableData[j].lastname === value[i]) {
-          usableData[j].bloodStatus = key;
+          usableData[j].blood = key;
         }
       }
     }
   }
 }
-
-//function that appoints a student to inquistorial squad
 
 function inquisitorialize() {
   let secondaryCntr;
@@ -522,8 +489,6 @@ function inquisitorialize() {
   }, 3000);
 }
 
-//function that removes a student from inquistorial squad
-
 function deInquisitorialize() {
   for (let counter = 0; counter < usableData.length; counter++) {
     if (usableData[counter].firstname === event.target.value) {
@@ -536,10 +501,8 @@ function deInquisitorialize() {
   document.querySelector("#inquisitorialRevokeButton").classList.add("hide");
 }
 
-//function that adds me to the student array
-
-function injectMyself() {
-  let me = Object.create(protoStudent);
+function importMe() {
+  let me = Object.create(newStudent);
   me.firstname = "Agne";
   me.lastname = "Krasauskaite";
   me.nickname = "Potter";
@@ -550,18 +513,16 @@ function injectMyself() {
   filteredData = usableData;
 }
 
-//function that displays the blood data of every student wrong way
-
-function mixBlood(target) {
+function changeBlood(target) {
   for (let counter = 0; counter < usableData.length; counter++) {
     if (target == usableData[counter].firstname) {
-      if (usableData[counter].bloodStatus == "half") {
+      if (usableData[counter].blood == "half") {
         document.querySelector(".blood-status").textContent =
           "Blood-Status: Pure";
-      } else if (usableData[counter].bloodStatus == "pure") {
+      } else if (usableData[counter].blood == "pure") {
         document.querySelector(".blood-status").textContent =
           "Blood-Status: Half";
-      } else if (usableData[counter].bloodStatus == false) {
+      } else if (usableData[counter].blood == false) {
         document.querySelector(".blood-status").textContent =
           "Blood-Status: Pure";
       }
