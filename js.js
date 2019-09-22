@@ -3,9 +3,6 @@ const template = document.querySelector("#templt").content;
 const link = "https://petlatkea.dk/2019/hogwartsdata/students.json";
 const familylink = "https://petlatkea.dk/2019/hogwartsdata/families.json";
 
-//const link = "temp/students.json";
-//const familylink = "temp/families.json";
-
 const parent = document.querySelector("ul.full-list");
 const modal = document.querySelector(".bg-modal");
 const modalbg = document.querySelector(".modal-content");
@@ -27,6 +24,7 @@ const newStudent = {
   lastname: "",
   nickname: "",
   middlename: "",
+  house: "",
   gender: "",
   prefect: "",
   blood: "",
@@ -61,13 +59,15 @@ document.querySelector("#close").addEventListener("click", function() {
   modal.classList.add("hide");
 });
 
+//Init function that starts on DOMcontentloaded
+
 function init(link) {
   fetch(link)
     .then(e => e.json())
     .then(data => {
       primaryData = data;
       fixData(data);
-      injectMyself();
+      importMe();
       displayData(filteredData);
     });
 
@@ -452,6 +452,8 @@ function removePrefect() {
   document.querySelector("#prefectButton").classList.remove("hide");
   document.querySelector("#prefectRevokeButton").classList.add("hide");
 }
+
+//funtion that uses data from json to define blood status of each student
 
 function defineblood(BloodTypes) {
   for (let [key, value] of Object.entries(BloodTypes)) {
